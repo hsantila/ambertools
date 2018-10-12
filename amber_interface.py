@@ -4,7 +4,8 @@ import subprocess
 import os
 
 def amber_inputs(topol, gro):
-	
+#Creates amber inputs from gromacs topology and corresponding .gro file. Example amber_inputs("topol.top","equilibrated.gro")
+#uses parmed
 	gmx_top = gromacs.GromacsTopologyFile(topol)
 	gmx_gro = gromacs.GromacsGroFile.parse(gro)
 	gmx_top.box = gmx_gro.box
@@ -26,9 +27,10 @@ def amber_inputs(topol, gro):
 	amb_inpcrd.close()
 
 def amber2grotraj():
+#concanates amber trajectioris with name prod*.nc to gromacs prod.trr. Assumes an amber topology with name prmtop to be present 
+#requires mdconvert to be installed
 	subprocess.call(['cp', 'prmtop', 'prmtop.prmtop'])
 	if os.path.exists("prod.trr"):
 		os.system('rm prod.trr')
-	#subprocess.call(['cpptraj','-p', 'prmtop','-y', 'prod*.nc','-x','prod.pdb'])
 	subprocess.call(['mdconvert','prod*.nc','-t', 'prmtop.prmtop','-o', 'prod.trr'])	
 	
